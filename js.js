@@ -157,7 +157,7 @@ function moveToLiveReportsPage(e) {
     homePage.setAttribute("style", "display:none")
     aboutPage.setAttribute("style", "display:none")
     canvasjs();
- 
+
 
 }
 // Show About Page reports page and hide others page
@@ -176,7 +176,6 @@ function moveToHomePage(e) {
 }
 
 function puseCoinToArr(e) {
-
 
     let idOfCoinThetClicked = e.target.parentElement.parentElement.parentElement.parentElement.id
     if (arrCoinsClicked.length < 5) {
@@ -216,24 +215,28 @@ function limitOfSelectedCoin(e) {
 
     // Remove the last coin
     e.target.parentElement.parentElement.parentElement.parentElement.remove()
-    console.log();
+
 
 
     document.querySelector(".popup").style = 'display:block';
     document.querySelector(".cover").style = 'display:block';
 
     let coinSelcted = document.querySelectorAll('.play');
-    for (let i = 0; i < coinSelcted.length; i++) {
-        console.log(coinSelcted.length);
 
-        let coins = coinSelcted[i].parentElement.parentElement.parentElement.parentElement
+    for (let i = 0; i < coinSelcted.length; i++) {
+        coins = coinSelcted[i].parentElement.parentElement.parentElement.parentElement
+
+
+        console.log(coins);
         coins.classList.add('col-md-12');
         let div_inside_form = document.createElement("div");
 
         document.querySelector(".popup").appendChild(div_inside_form);
         div_inside_form.appendChild(coins);
 
+
     }
+
 
 
     let btnSave = document.createElement("btn");
@@ -251,6 +254,7 @@ function limitOfSelectedCoin(e) {
     })
 
 }
+
 // Remove id from array when switch button clicked
 function removeCoinFromArr(e) {
     let idOfCoinThetClicked = e.target.parentElement.parentElement.parentElement.parentElement.id
@@ -310,9 +314,9 @@ const getDataOnCoin = (coin, event) => {
                 <br>
                 <img src=${infoCoin.img} />
                 <br>
-                <br>1 coin =${infoCoin.priceUsd} <i class="fa fa-dollar-sign"></i> <br>
-                1 coin =${infoCoin.priceEur} <i class="fa fa-euro-sign"></i> <br>
-                1 coin =${infoCoin.priceIls} <i class="fa fa-shekel-sign"></i> <br>
+                <br>1 coin =${infoCoin.priceUsd} $ <br>
+                1 coin =${infoCoin.priceEur} € <br>
+                1 coin =${infoCoin.priceIls} ₪ <i class="fas fa-shekel-sign"></i> <br>
                 `
 
             },
@@ -343,7 +347,7 @@ const getDataOnCoin = (coin, event) => {
 let arrNameOfCoinWithPrice = [];
 
 const canvasjs = (data) => {
-    setInterval(()=>{
+    setInterval(() => {
         console.log("interval");
 
         $.ajax({
@@ -353,16 +357,16 @@ const canvasjs = (data) => {
             success: function (res) {
                 let data = res;
                 console.log(data);
-               
-        
+
+
             },
             error: function (xhr) {
                 console.log("Error:", xhr);
             }
         });
-    
-    },1000*5)
-    
+
+    }, 1000 * 5)
+
 
     arrCoinsSymbol.forEach((element) => {
         let priceOfCoin;
@@ -479,7 +483,7 @@ const canvasjs = (data) => {
 
     function updateChart(count) {
         count = count || 1;
-        var deltaY1, deltaY2,deltaY3,deltaY4,deltaY5;
+        var deltaY1, deltaY2, deltaY3, deltaY4, deltaY5;
         for (var i = 0; i < count; i++) {
             time.setTime(time.getTime() + updateInterval);
             deltaY1 = .5 + Math.random() * (-.5 - .5);
@@ -519,7 +523,7 @@ const canvasjs = (data) => {
         }
 
         // updating legend text with  updated with y Value 
-        chart.options.data[0].legendText =  `Coin 1  $ `+ yValue1;
+        chart.options.data[0].legendText = `Coin 1  $ ` + yValue1;
         chart.options.data[1].legendText = " Coin 2  $" + yValue2;
         chart.options.data[2].legendText = " Coin 3  $" + yValue3;
         chart.options.data[3].legendText = " Coin 4  $" + yValue4;
