@@ -1,32 +1,37 @@
 .header {
-  /* The image used */
-  background-image: url("images/5.jpg");
-  /* Set a specific height */
-  height: 400px;
-  /* Create the parallax scrolling effect */
-  background-attachment: scroll;
-  background-position: center;
+  height: 300px;
+}
+
+.nav li a {
+  font-size: 35px;
+  color: rgb(199, 200, 206);
+}
+
+.nav li a:hover {
+  font-size: 35px;
+  color: rgb(197, 154, 13);
+}
+
+.nav {
+  background-color: rgba(6, 6, 61, 0.57);
+}
+
+.parallax {
+  background: url(images/11.jpg);
   background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
-  opacity: 1;
+  background-attachment: fixed;
+  height: 400px;
 }
 
 .header span {
+  color: rgb(199, 200, 206);
   font-size: 65px;
   display: block;
   text-align: center;
   position: absolute;
-  bottom: 25px;
-  left: 0px;
-}
-
-.header img {
-  width: 200px;
-  height: 200px;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  border-radius: 50%;
+  left: 35px;
 }
 
 img {
@@ -35,6 +40,7 @@ img {
 
 body {
   box-sizing: border-box;
+  font-family: 'Girassol', cursive;
 }
 
 #reports {
@@ -135,10 +141,11 @@ button.accordion {
 button.accordion:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
-button.accordion.active{
+
+button.accordion.active {
   background-color: #fff;
   color: #000;
-  border-radius: 4px 4px 0 0 ;
+  border-radius: 4px 4px 0 0;
 }
 
 div.panel {
@@ -149,16 +156,17 @@ div.panel {
   max-height: 0;
   transition: 0.3s;
   margin-top: 5px;
-
 }
-div.panel.show{
+
+div.panel.show {
   opacity: 1;
-  max-height:500px ;
+  max-height: 500px;
 }
 
-.cover{
+.cover {
   background-color: rgba(50, 50, 50, 0.3);
-  position: fixed;;
+  position: fixed;
+  ;
   top: 0;
   left: 0;
   display: none;
@@ -166,7 +174,8 @@ div.panel.show{
   min-height: 100%;
   z-index: 100;
 }
-.popup{
+
+.popup {
   background-color: white;
   width: 800px;
   min-height: 600px;
