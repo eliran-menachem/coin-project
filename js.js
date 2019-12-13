@@ -356,7 +356,7 @@ const canvasjs = (data) => {
             data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
             success: function (res) {
                 let data = res;
-                console.log(data);
+                console.log(data);   
 
 
             },
