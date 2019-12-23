@@ -34,6 +34,7 @@ let arrPriceOfCoin = [];
 
 
 
+
 // Create cards 
 function createCard(coin) {
     let div_wrapper_card = document.createElement("div");
@@ -69,8 +70,6 @@ function createCard(coin) {
             input_inside_label_switch.classList.add('play');
             pushCoinToArr(e);
             setSymbolCoinInArr(e)
-
-
         }
     })
 
@@ -187,15 +186,18 @@ function pushCoinToArr(e) {
         return;
     }
 
+    const newArrOfCoinsClicked = [...arrCoinsClicked];
+    console.log(newArrOfCoinsClicked);
+
     alert('You can generate a report for only 5 coins! Please remove currency');
-    limitOfSelectedCoin(e)
+    limitOfSelectedCoin(e, newArrOfCoinsClicked)
 }
 
 function setSymbolCoinInArr(e) {
     let sybolOfCoin = e.target.parentElement.parentElement.parentElement.children[0].children[0].textContent;
-    if (arrCoinsSymbol.length < 5) {
+    if (arrCoinsSymbol.length < 6) {
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 6; i++) {
 
             if (arrCoinsSymbol[i] !== sybolOfCoin) {
                 arrCoinsSymbol.push(sybolOfCoin);
@@ -207,23 +209,70 @@ function setSymbolCoinInArr(e) {
     }
 }
 
-function limitOfSelectedCoin(e) {
+// function limitOfSelectedCoin(e) {
+//     //Get the id of last coin
+//     let lastCoinId = e.target.parentElement.parentElement.parentElement.parentElement.id
+
+//     // Remove the last coin
+//     e.target.parentElement.parentElement.parentElement.parentElement.remove()
+
+
+
+//     document.querySelector(".popup").style = 'display:block';
+//     document.querySelector(".cover").style = 'display:block';
+
+//     let coinSelcted = document.querySelectorAll('.play');
+
+//     for (let i = 0; i < coinSelcted.length; i++) {
+//         coins = coinSelcted[i].parentElement.parentElement.parentElement.parentElement
+
+
+//         console.log(coins);
+//         coins.classList.add('col-md-12');
+//         let div_inside_form = document.createElement("div");
+
+//         document.querySelector(".popup").appendChild(div_inside_form);
+//         div_inside_form.appendChild(coins);
+
+
+//     }
+
+
+
+//     let btnSave = document.createElement("btn");
+//     let btnClose = document.createElement("btn");
+//     btnSave.classList.add("btn", 'btn-success', 'col-md-5', 'm-3');
+//     btnClose.classList.add("btn", 'btn-info', 'col-md-5', 'm-3');
+//     btnSave.textContent = "SAVE";
+//     btnClose.textContent = "ClOSE";
+//     document.querySelector(".popup").appendChild(btnSave);
+//     document.querySelector(".popup").appendChild(btnClose);
+
+//     btnClose.addEventListener("click", function () {
+//         document.querySelector(".popup").style = 'display:none';
+//         document.querySelector(".cover").style = 'display:none';
+//     })
+
+// }
+
+function limitOfSelectedCoin(e, newArrOfCoinsClicked) {
     //Get the id of last coin
-    let lastCoinId = e.target.parentElement.parentElement.parentElement.parentElement.id
+    let lastCoinId = e.target
 
-    // Remove the last coin
-    e.target.parentElement.parentElement.parentElement.parentElement.remove()
-
-
+    let arrCoinsCard = []
+    let coinSelcted = document.querySelectorAll('.play');
 
     document.querySelector(".popup").style = 'display:block';
     document.querySelector(".cover").style = 'display:block';
 
-    let coinSelcted = document.querySelectorAll('.play');
+    let idOfoinSelcted = newArrOfCoinsClicked;
+    console.log(coinSelcted);
+    console.log(idOfoinSelcted);
+
 
     for (let i = 0; i < coinSelcted.length; i++) {
         coins = coinSelcted[i].parentElement.parentElement.parentElement.parentElement
-
+        arrCoinsCard.push(coins)
 
         console.log(coins);
         coins.classList.add('col-md-12');
@@ -232,23 +281,31 @@ function limitOfSelectedCoin(e) {
         document.querySelector(".popup").appendChild(div_inside_form);
         div_inside_form.appendChild(coins);
 
-
     }
-
-
 
     let btnSave = document.createElement("btn");
     let btnClose = document.createElement("btn");
-    btnSave.classList.add("btn", 'btn-success', 'col-md-5', 'm-3');
-    btnClose.classList.add("btn", 'btn-info', 'col-md-5', 'm-3');
-    btnSave.textContent = "SAVE";
-    btnClose.textContent = "ClOSE";
+
+    btnClose.classList.add("btn", 'btn-success', 'col');
+
+    btnClose.textContent = "Save";
     document.querySelector(".popup").appendChild(btnSave);
     document.querySelector(".popup").appendChild(btnClose);
 
     btnClose.addEventListener("click", function () {
-        document.querySelector(".popup").style = 'display:none';
-        document.querySelector(".cover").style = 'display:none';
+        if (arrCoinsSymbol.length <= 5) {
+            for (let x = 0; x < arrCoinsCard.length; x++) {
+                arrCoinsCard[x].classList.remove('col-md-12')
+                arrCoinsCard[x].classList.add('col-md-4')
+                document.getElementById('wrapperOfCards').appendChild(arrCoinsCard[x]);
+            }
+
+            document.querySelector(".popup").style = 'display:none';
+            document.querySelector(".cover").style = 'display:none';
+        }
+        else {
+            alert('Please Choose Max 5 coins!')
+        }
     })
 
 }
@@ -269,7 +326,7 @@ function removeSymbolFromArr(e) {
 
     let symbolOfCoinThetClicked = e.target.parentElement.parentElement.parentElement.children[0].children[0].textContent;
     console.log(symbolOfCoinThetClicked);
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         if (arrCoinsSymbol[i] === symbolOfCoinThetClicked) {
             arrCoinsSymbol.splice(i, 1);
         }
@@ -460,8 +517,8 @@ const canvasjs = () => {
                         x: new Date(),
                         y: data[key].USD
                     }
-                        //   chart.options.data[i].dataPoints.push(point);
-                        chart.options.data[i]? chart.options.data[i].dataPoints.push(point):chart.options.data[i]
+                    //   chart.options.data[i].dataPoints.push(point);
+                    chart.options.data[i] ? chart.options.data[i].dataPoints.push(point) : chart.options.data[i]
                     i++;
                     //arrPoints.push(point);
                 }
