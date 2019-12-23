@@ -22,8 +22,33 @@ let reportsPage = document.getElementById('reports');
 // Get about Page
 let aboutPage = document.getElementById('about');
 
-// Get search button
+// Get search button and create filter 
 const btnSearch = document.getElementById("btn_search");
+btnSearch.addEventListener('click', function () {
+    filterFunc()
+});
+
+// filter function
+const filterFunc = ()=>{
+    let inputSearch = document.querySelector('.form-control').value.toLowerCase();
+    let cards = document.querySelectorAll('.card');
+    Array.from(cards).forEach((coin, index) => {
+        let symbolOfCoin = coin.firstElementChild.firstElementChild.firstElementChild.textContent;
+        if (symbolOfCoin.toLowerCase().indexOf(inputSearch) != -1) {
+            cards[index].style.display = 'block';
+        }
+        else {
+            cards[index].style.display = 'none';
+        }
+    });
+}
+
+// Clear value of input and return all coins
+let inputSearch = document.querySelector('.form-control')
+inputSearch.addEventListener('click', (e) => {
+    e.target.value = "";
+    filterFunc()
+})
 
 //Create Arr for cards that clicked
 let arrCoinsClicked = [];
@@ -31,8 +56,7 @@ let arrCoinsClicked = [];
 let localStorageArr = [];
 let arrCoinsSymbol = [];
 let arrPriceOfCoin = [];
-
-
+let arr_coins = []
 
 
 // Create cards 
@@ -131,7 +155,7 @@ function ajaxFunc() {
         url: "https://api.coingecko.com/api/v3/coins/list",
         type: "GET",
         success: function (res) {
-            let arr_coins = res;
+            arr_coins = res;
             setCoins(arr_coins);
         },
         error: function (xhr) {
@@ -143,7 +167,7 @@ function ajaxFunc() {
 // Function - set coin on site
 function setCoins(arr_coins) {
     console.log(arr_coins);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
         let getCard = createCard(arr_coins[i]);
         document.getElementById('wrapperOfCards').appendChild(getCard);
     }// End of for loop 
@@ -208,67 +232,13 @@ function setSymbolCoinInArr(e) {
         return;
     }
 }
-
-// function limitOfSelectedCoin(e) {
-//     //Get the id of last coin
-//     let lastCoinId = e.target.parentElement.parentElement.parentElement.parentElement.id
-
-//     // Remove the last coin
-//     e.target.parentElement.parentElement.parentElement.parentElement.remove()
-
-
-
-//     document.querySelector(".popup").style = 'display:block';
-//     document.querySelector(".cover").style = 'display:block';
-
-//     let coinSelcted = document.querySelectorAll('.play');
-
-//     for (let i = 0; i < coinSelcted.length; i++) {
-//         coins = coinSelcted[i].parentElement.parentElement.parentElement.parentElement
-
-
-//         console.log(coins);
-//         coins.classList.add('col-md-12');
-//         let div_inside_form = document.createElement("div");
-
-//         document.querySelector(".popup").appendChild(div_inside_form);
-//         div_inside_form.appendChild(coins);
-
-
-//     }
-
-
-
-//     let btnSave = document.createElement("btn");
-//     let btnClose = document.createElement("btn");
-//     btnSave.classList.add("btn", 'btn-success', 'col-md-5', 'm-3');
-//     btnClose.classList.add("btn", 'btn-info', 'col-md-5', 'm-3');
-//     btnSave.textContent = "SAVE";
-//     btnClose.textContent = "ClOSE";
-//     document.querySelector(".popup").appendChild(btnSave);
-//     document.querySelector(".popup").appendChild(btnClose);
-
-//     btnClose.addEventListener("click", function () {
-//         document.querySelector(".popup").style = 'display:none';
-//         document.querySelector(".cover").style = 'display:none';
-//     })
-
-// }
-
 function limitOfSelectedCoin(e, newArrOfCoinsClicked) {
-    //Get the id of last coin
-    let lastCoinId = e.target
 
     let arrCoinsCard = []
     let coinSelcted = document.querySelectorAll('.play');
 
     document.querySelector(".popup").style = 'display:block';
     document.querySelector(".cover").style = 'display:block';
-
-    let idOfoinSelcted = newArrOfCoinsClicked;
-    console.log(coinSelcted);
-    console.log(idOfoinSelcted);
-
 
     for (let i = 0; i < coinSelcted.length; i++) {
         coins = coinSelcted[i].parentElement.parentElement.parentElement.parentElement
@@ -369,9 +339,9 @@ const getDataOnCoin = (coin, event) => {
                 <br>
                 <img src=${infoCoin.img} />
                 <br>
-                <br>1 coin =${infoCoin.priceUsd} $ <br>
-                1 coin =${infoCoin.priceEur} € <br>
-                1 coin =${infoCoin.priceIls} ₪ <i class="fa fa-shekel-sign"></i> <br>
+                <br>1 coin =${infoCoin.priceUsd} <i class="fas fa-dollar-sign"></i><br>
+                1 coin =${infoCoin.priceEur} <i class="fa fa-euro-sign"></i><br>
+                1 coin =${infoCoin.priceIls} <i class="fa fa-shekel-sign"></i> <br>
                 `
 
             },
