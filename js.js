@@ -29,7 +29,7 @@ btnSearch.addEventListener('click', function () {
 });
 
 // filter function
-const filterFunc = ()=>{
+const filterFunc = () => {
     let inputSearch = document.querySelector('.form-control').value.toLowerCase();
     let cards = document.querySelectorAll('.card');
     Array.from(cards).forEach((coin, index) => {
@@ -42,6 +42,8 @@ const filterFunc = ()=>{
         }
     });
 }
+
+let stopInterval = false
 
 // Clear value of input and return all coins
 let inputSearch = document.querySelector('.form-control')
@@ -183,10 +185,11 @@ function moveToLiveReportsPage(e) {
 }
 // Show About Page reports page and hide others page
 function moveToAboutPage(e) {
-    console.log(e.target.parentElement);
+
     reportsPage.setAttribute("style", "display:none")
     homePage.setAttribute("style", "display:none")
     aboutPage.setAttribute("style", "display:block")
+
 
 }
 // Show HomePage reports page and hide others page
@@ -194,6 +197,7 @@ function moveToHomePage(e) {
     reportsPage.setAttribute("style", "display:none")
     homePage.setAttribute("style", "display:block")
     aboutPage.setAttribute("style", "display:none")
+    
 }
 
 function pushCoinToArr(e) {
@@ -439,17 +443,12 @@ const canvasjs = () => {
                     yValueFormatString: "$####.00",
                     xValueFormatString: "hh:mm:ss TT",
                     showInLegend: true,
-                    name: `Coin ${i}`,
+                    name: (arrCoinsSymbol[i]) ? `${arrCoinsSymbol[i]}` : 'eth',
                     dataPoints: [arrPoints[i]]
                 }
             )
-
         }
-
     } // End func printData
-
-
-
 
     function toggleDataSeries(e) {
         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
@@ -463,57 +462,33 @@ const canvasjs = () => {
     var updateInterval = 1000 * 2;
 
     var time = new Date;
-
-    // starting at 9.30 am
-    // time.setHours(9);
-    // time.setMinutes(30);
-    // time.setSeconds(00);
-    // time.setMilliseconds(00);
-
     console.log(arrPoints);
 
     function updateChart() {
-        $.ajax({
-            url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${[...arrCoinsSymbol]},ETH&tsyms=USD`,
-            type: "GET",
-            data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
-            success: function (res) {
-                let data = res;
-                //printData(data, arrCoinsSymbol);
-                let i = 0;
-                for (let key in data) {
-                    console.log(data[key].USD);
-                    point = {
-                        x: new Date(),
-                        y: data[key].USD
-                    }
-                    //   chart.options.data[i].dataPoints.push(point);
-                    chart.options.data[i] ? chart.options.data[i].dataPoints.push(point) : chart.options.data[i]
-                    i++;
-                    //arrPoints.push(point);
+    
+            $.ajax({
+                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${[...arrCoinsSymbol]},ETH&tsyms=USD`,
+                type: "GET",
+                data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
+                success: function (res) {
+                    let data = res;
+                    let i = 0;
+                    for (let key in data) {       
+                        point = {
+                            x: new Date(),
+                            y: data[key].USD
+                        }
+                        chart.options.data[i] ? chart.options.data[i].dataPoints.push(point) : chart.options.data[i]
+                        i++;
+                    }       
+                    chart.render();           
+                },
+                error: function (xhr) {
+                    console.log("Error:", xhr);
                 }
-                chart.render();
-
-            },
-            error: function (xhr) {
-                console.log("Error:", xhr);
-            }
-        });
-
-        console.log(chart.options);
-
-        // updating legend text with  updated with y Value 
-
-
-        // chart.options.data[0].legendText = `Coin 1  $ ` + arrPoints.y;
-        // chart.options.data[1].legendText = " Coin 2  $" + yValue2;
-        // chart.options.data[2].legendText = " Coin 3  $" + yValue3;
-        // chart.options.data[3].legendText = " Coin 4  $" + yValue4;
-        // chart.options.data[4].legendText = " Coin 5  $" + yValue5;
-
+            })
+         
     }
-    // generates first set of dataPoints 
-    //updateChart(100);
-    setInterval(function () { updateChart(arrPoints) }, updateInterval);
+    let myInterval = setInterval(function () { updateChart(arrPoints) }, updateInterval);
 
 } // End of function
