@@ -187,3 +187,7 @@ div.panel.show {
   display: none;
   border: 2px solid black;
 }
+
+.col-md-7 span{
+  font-size: 30px;
+}
