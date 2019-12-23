@@ -67,7 +67,7 @@ function createCard(coin) {
         }
         else {
             input_inside_label_switch.classList.add('play');
-            puseCoinToArr(e);
+            pushCoinToArr(e);
             setSymbolCoinInArr(e)
 
 
@@ -157,8 +157,6 @@ function moveToLiveReportsPage(e) {
     homePage.setAttribute("style", "display:none")
     aboutPage.setAttribute("style", "display:none")
     canvasjs();
-
-
 }
 // Show About Page reports page and hide others page
 function moveToAboutPage(e) {
@@ -175,7 +173,7 @@ function moveToHomePage(e) {
     aboutPage.setAttribute("style", "display:none")
 }
 
-function puseCoinToArr(e) {
+function pushCoinToArr(e) {
 
     let idOfCoinThetClicked = e.target.parentElement.parentElement.parentElement.parentElement.id
     if (arrCoinsClicked.length < 5) {
@@ -316,7 +314,7 @@ const getDataOnCoin = (coin, event) => {
                 <br>
                 <br>1 coin =${infoCoin.priceUsd} $ <br>
                 1 coin =${infoCoin.priceEur} € <br>
-                1 coin =${infoCoin.priceIls} ₪ <i class="fas fa-shekel-sign"></i> <br>
+                1 coin =${infoCoin.priceIls} ₪ <i class="fa fa-shekel-sign"></i> <br>
                 `
 
             },
@@ -346,115 +344,85 @@ const getDataOnCoin = (coin, event) => {
 
 let arrNameOfCoinWithPrice = [];
 
-const canvasjs = (data) => {
-    setInterval(() => {
-        console.log("interval");
+const canvasjs = () => {
+    let point = {}
+    let arrPoints = []
+    let arrDataPoints = []
+    var chart = null;
+    console.log(arrCoinsSymbol.join());
+    console.log([...arrCoinsSymbol]);
 
-        $.ajax({
-            url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${arrCoinsSymbol.join()},ETH&tsyms=USD`,
-            type: "GET",
-            data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
-            success: function (res) {
-                let data = res;
-                console.log(data);   
+    $.ajax({
+        url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${[...arrCoinsSymbol]},ETH&tsyms=USD`,
+        type: "GET",
+        data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
+        success: function (res) {
+            let data = res;
+            printData(data, arrCoinsSymbol);
+            chart = new CanvasJS.Chart("chartContainer", {
+                zoomEnabled: true,
+                title: {
+                    text: "Value of Coins"
+                },
+                axisX: {
+                    title: "chart updates every 2 secs"
+                },
+                axisY: {
+                    prefix: "$",
+                    includeZero: false
+                },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    cursor: "pointer",
+                    verticalAlign: "top",
+                    fontSize: 22,
+                    fontColor: "dimGrey",
+                    itemclick: toggleDataSeries
+                },
 
+                data: arrDataPoints
 
-            },
-            error: function (xhr) {
-                console.log("Error:", xhr);
-            }
-        });
-
-    }, 1000 * 5)
-
-
-    arrCoinsSymbol.forEach((element) => {
-        let priceOfCoin;
-        if (data[element] !== undefined) {
-
-            arrNameOfCoinWithPrice.push(element)
-            priceOfCoin = data[element].USD;
-            arrPriceOfCoin.push({ element: priceOfCoin })
-
+            });
+            console.log(arrDataPoints);
+            chart.render();
+        },
+        error: function (xhr) {
+            console.log("Error:", xhr);
         }
     });
-    console.log(arrPriceOfCoin);
-    console.log(arrCoinsSymbol);
-    console.log(arrNameOfCoinWithPrice);
 
-
-    var dataPoints1 = [];
-    var dataPoints2 = [];
-    var dataPoints3 = [];
-    var dataPoints4 = [];
-    var dataPoints5 = [];
-
-    var chart = new CanvasJS.Chart("chartContainer", {
-        zoomEnabled: true,
-        title: {
-            text: "Share Value of Two Companies"
-        },
-        axisX: {
-            title: "chart updates every 2 secs"
-        },
-        axisY: {
-            prefix: "$",
-            includeZero: false
-        },
-        toolTip: {
-            shared: true
-        },
-        legend: {
-            cursor: "pointer",
-            verticalAlign: "top",
-            fontSize: 22,
-            fontColor: "dimGrey",
-            itemclick: toggleDataSeries
-        },
-        data: [
-            {
-                type: "line",
-                xValueType: "dateTime",
-                yValueFormatString: "$####.00",
-                xValueFormatString: "hh:mm:ss TT",
-                showInLegend: true,
-                name: "Coin 1",
-                dataPoints: dataPoints1
-            },
-            {
-                type: "line",
-                xValueType: "dateTime",
-                yValueFormatString: "$####.00",
-                showInLegend: true,
-                name: "Coin 2",
-                dataPoints: dataPoints2
-            },
-            {
-                type: "line",
-                xValueType: "dateTime",
-                yValueFormatString: "$####.00",
-                showInLegend: true,
-                name: "Coin 3",
-                dataPoints: dataPoints3
-            },
-            {
-                type: "line",
-                xValueType: "dateTime",
-                yValueFormatString: "$####.00",
-                showInLegend: true,
-                name: "Coin 4",
-                dataPoints: dataPoints4
-            },
-            {
-                type: "line",
-                xValueType: "dateTime",
-                yValueFormatString: "$####.00",
-                showInLegend: true,
-                name: "Coin 5",
-                dataPoints: dataPoints5
+    function printData(data, arrCoinsSymbol) {
+        console.log(data);
+        console.log(arrCoinsSymbol);
+        for (let key in data) {
+            console.log(data[key].USD);
+            point = {
+                x: time.getTime(),
+                y: data[key].USD
             }
-        ]
-    });
+            arrPoints.push(point);
+        }
+        for (let i = 0; i < arrPoints.length; i++) {
+            arrDataPoints.push(
+                {
+                    type: "line",
+                    xValueType: "dateTime",
+                    yValueFormatString: "$####.00",
+                    xValueFormatString: "hh:mm:ss TT",
+                    showInLegend: true,
+                    name: `Coin ${i}`,
+                    dataPoints: [arrPoints[i]]
+                }
+            )
+
+        }
+
+    } // End func printData
+
+
+
 
     function toggleDataSeries(e) {
         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
@@ -465,79 +433,60 @@ const canvasjs = (data) => {
         }
         chart.render();
     }
-
-    var updateInterval = 2000;
-    // initial value
-    var yValue1 = 600;
-    var yValue2 = 605;
-    var yValue3 = 605;
-    var yValue4 = 605;
-    var yValue5 = 605;
+    var updateInterval = 1000 * 2;
 
     var time = new Date;
+
     // starting at 9.30 am
-    time.setHours(9);
-    time.setMinutes(30);
-    time.setSeconds(00);
-    time.setMilliseconds(00);
+    // time.setHours(9);
+    // time.setMinutes(30);
+    // time.setSeconds(00);
+    // time.setMilliseconds(00);
 
-    function updateChart(count) {
-        count = count || 1;
-        var deltaY1, deltaY2, deltaY3, deltaY4, deltaY5;
-        for (var i = 0; i < count; i++) {
-            time.setTime(time.getTime() + updateInterval);
-            deltaY1 = .5 + Math.random() * (-.5 - .5);
-            deltaY2 = .5 + Math.random() * (-.5 - .5);
-            deltaY3 = .5 + Math.random() * (-.5 - .5);
-            deltaY4 = .5 + Math.random() * (-.5 - .5);
-            deltaY5 = .5 + Math.random() * (-.5 - .5);
+    console.log(arrPoints);
 
-            // adding random value and rounding it to two digits. 
-            yValue1 = Math.round((yValue1 + deltaY1) * 100) / 100;
-            yValue2 = Math.round((yValue2 + deltaY2) * 100) / 100;
-            yValue3 = Math.round((yValue3 + deltaY3) * 100) / 100;
-            yValue4 = Math.round((yValue4 + deltaY4) * 100) / 100;
-            yValue5 = Math.round((yValue5 + deltaY5) * 100) / 100;
+    function updateChart() {
+        $.ajax({
+            url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${[...arrCoinsSymbol]},ETH&tsyms=USD`,
+            type: "GET",
+            data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
+            success: function (res) {
+                let data = res;
+                //printData(data, arrCoinsSymbol);
+                let i = 0;
+                for (let key in data) {
+                    console.log(data[key].USD);
+                    point = {
+                        x: new Date(),
+                        y: data[key].USD
+                    }
+                        //   chart.options.data[i].dataPoints.push(point);
+                        chart.options.data[i]? chart.options.data[i].dataPoints.push(point):chart.options.data[i]
+                    i++;
+                    //arrPoints.push(point);
+                }
+                chart.render();
 
-            // pushing the new values
-            dataPoints1.push({
-                x: time.getTime(),
-                y: yValue1
-            });
-            dataPoints2.push({
-                x: time.getTime(),
-                y: yValue2
-            });
-            dataPoints3.push({
-                x: time.getTime(),
-                y: yValue3
-            });
-            dataPoints4.push({
-                x: time.getTime(),
-                y: yValue4
-            });
-            dataPoints5.push({
-                x: time.getTime(),
-                y: yValue5
-            });
-        }
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr);
+            }
+        });
+
+        console.log(chart.options);
 
         // updating legend text with  updated with y Value 
-        chart.options.data[0].legendText = `Coin 1  $ ` + yValue1;
-        chart.options.data[1].legendText = " Coin 2  $" + yValue2;
-        chart.options.data[2].legendText = " Coin 3  $" + yValue3;
-        chart.options.data[3].legendText = " Coin 4  $" + yValue4;
-        chart.options.data[4].legendText = " Coin 5  $" + yValue5;
-        chart.render();
+
+
+        // chart.options.data[0].legendText = `Coin 1  $ ` + arrPoints.y;
+        // chart.options.data[1].legendText = " Coin 2  $" + yValue2;
+        // chart.options.data[2].legendText = " Coin 3  $" + yValue3;
+        // chart.options.data[3].legendText = " Coin 4  $" + yValue4;
+        // chart.options.data[4].legendText = " Coin 5  $" + yValue5;
+
     }
     // generates first set of dataPoints 
-    updateChart(100);
-    setInterval(function () { updateChart() }, updateInterval);
+    //updateChart(100);
+    setInterval(function () { updateChart(arrPoints) }, updateInterval);
 
 } // End of function
-
-
-
-
-
-
