@@ -28,6 +28,8 @@ btnSearch.addEventListener('click', function () {
     filterFunc()
 });
 
+let getTime = new Date();
+
 // filter function
 const filterFunc = () => {
     let inputSearch = document.querySelector('.form-control').value.toLowerCase();
@@ -59,7 +61,7 @@ let localStorageArr = [];
 let arrCoinsSymbol = [];
 let arrPriceOfCoin = [];
 let arr_coins = []
-
+let counter = 0;
 
 // Create cards 
 function createCard(coin) {
@@ -197,7 +199,7 @@ function moveToHomePage(e) {
     reportsPage.setAttribute("style", "display:none")
     homePage.setAttribute("style", "display:block")
     aboutPage.setAttribute("style", "display:none")
-    
+
 }
 
 function pushCoinToArr(e) {
@@ -237,7 +239,7 @@ function setSymbolCoinInArr(e) {
     }
 }
 function limitOfSelectedCoin(e, newArrOfCoinsClicked) {
-
+    
     let arrCoinsCard = []
     let coinSelcted = document.querySelectorAll('.play');
 
@@ -257,17 +259,17 @@ function limitOfSelectedCoin(e, newArrOfCoinsClicked) {
 
     }
 
-    let btnSave = document.createElement("btn");
     let btnClose = document.createElement("btn");
 
     btnClose.classList.add("btn", 'btn-success', 'col');
-
     btnClose.textContent = "Save";
-    document.querySelector(".popup").appendChild(btnSave);
-    document.querySelector(".popup").appendChild(btnClose);
-
+    (counter == 0) ?
+        document.querySelector(".popup").appendChild(btnClose) : null
+    console.log(counter);
+    
     btnClose.addEventListener("click", function () {
         if (arrCoinsSymbol.length <= 5) {
+            counter++
             for (let x = 0; x < arrCoinsCard.length; x++) {
                 arrCoinsCard[x].classList.remove('col-md-12')
                 arrCoinsCard[x].classList.add('col-md-4')
@@ -308,11 +310,11 @@ function removeSymbolFromArr(e) {
 }
 
 const getDataOnCoin = (coin, event) => {
-
+    getTimeInNum = new Date().getTime()
+    console.log(getTimeInNum);
 
     document.getElementById(`${coin.id}btn`).classList.toggle('show');
     document.getElementById(`${coin.id}btn`).classList.toggle('active');
-
 
 
     if (localStorage.getItem(`${coin.id}`) === null) {
@@ -465,30 +467,30 @@ const canvasjs = () => {
     console.log(arrPoints);
 
     function updateChart() {
-    
-            $.ajax({
-                url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${[...arrCoinsSymbol]},ETH&tsyms=USD`,
-                type: "GET",
-                data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
-                success: function (res) {
-                    let data = res;
-                    let i = 0;
-                    for (let key in data) {       
-                        point = {
-                            x: new Date(),
-                            y: data[key].USD
-                        }
-                        chart.options.data[i] ? chart.options.data[i].dataPoints.push(point) : chart.options.data[i]
-                        i++;
-                    }       
-                    chart.render();           
-                },
-                error: function (xhr) {
-                    console.log("Error:", xhr);
+
+        $.ajax({
+            url: `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${[...arrCoinsSymbol]},ETH&tsyms=USD`,
+            type: "GET",
+            data: { apikey: "4f422e5c71db3277606233e9a02d6ce88550f7a69bb5a398ecb9b8f8d03d4f2c" },
+            success: function (res) {
+                let data = res;
+                let i = 0;
+                for (let key in data) {
+                    point = {
+                        x: new Date(),
+                        y: data[key].USD
+                    }
+                    chart.options.data[i] ? chart.options.data[i].dataPoints.push(point) : chart.options.data[i]
+                    i++;
                 }
-            })
-         
+                chart.render();
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr);
+            }
+        })
+
     }
-    let myInterval = setInterval(function () { updateChart(arrPoints) }, updateInterval);
+    setInterval(function () { updateChart(arrPoints) }, updateInterval);
 
 } // End of function
